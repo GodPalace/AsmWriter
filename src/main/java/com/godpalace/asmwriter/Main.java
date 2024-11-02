@@ -1,23 +1,26 @@
 package com.godpalace.asmwriter;
 
-import com.godpalace.asmwriter.other.error.ErrorListener;
-import com.godpalace.asmwriter.other.error.ErrorManager;
+import com.godpalace.asmwriter.error.ErrorListener;
+import com.godpalace.asmwriter.error.ErrorManager;
 import com.godpalace.asmwriter.settings.GuiSettings;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Objects;
 import java.util.Properties;
 
-import static com.godpalace.asmwriter.other.ResourcePaths.CONFIG_PATH;
+import static com.godpalace.asmwriter.config.ResourcePaths.CONFIG_PATH;
 
 public class Main {
     // Class Objects
     private static final Class<Main> clazz = Main.class;
     private static final ErrorManager error = new ErrorManager();
     private static final GuiSettings settings = new GuiSettings();
+    private static final Toolkit toolkit = Toolkit.getDefaultToolkit();
 
     // Static Resources
     private static final ImageIcon icon = new ImageIcon(Objects.requireNonNull(
@@ -38,11 +41,11 @@ public class Main {
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    properties.setProperty("windowHeight", settings.windowHeight + "");
-                    properties.setProperty("windowWidth", settings.windowWidth + "");
-                    properties.setProperty("isMaximized", settings.isMaximized + "");
+                    properties.setProperty("windowHeight", f.getHeight() + "");
+                    properties.setProperty("windowWidth", f.getWidth() + "");
+                    properties.setProperty("isMaximized", (f.getExtendedState() == JFrame.MAXIMIZED_BOTH ? "true" : "false"));
 
-                    properties.store(new java.io.FileOutputStream(CONFIG_PATH), null);
+                    properties.store(new FileOutputStream(CONFIG_PATH), null);
                 } catch (Exception e) {
                     error.setLastError(e);
                 }
@@ -56,7 +59,10 @@ public class Main {
     private static boolean initProperties() {
         try {
             File configFile = new File(CONFIG_PATH);
-            if (!configFile.exists()) configFile.createNewFile();
+            if (!configFile.exists()) {
+                configFile.getParentFile().mkdirs();
+                configFile.createNewFile();
+            }
         } catch (Exception e) {
             error.setLastError(e);
             return false;
@@ -66,9 +72,9 @@ public class Main {
             properties.load(new FileInputStream(CONFIG_PATH));
 
             settings.windowHeight = Integer.parseInt(properties.getProperty(
-                    "windowHeight", "500"));
+                    "windowHeight", toolkit.getScreenSize().height - 80 + ""));
             settings.windowWidth = Integer.parseInt(properties.getProperty(
-                    "windowWidth", "500"));
+                    "windowWidth", toolkit.getScreenSize().width - 50 + ""));
             settings.isMaximized = Boolean.parseBoolean(properties.getProperty(
                     "isMaximized", "false"));
         } catch (Exception e) {
@@ -83,15 +89,61 @@ public class Main {
         f = new JFrame("AsmWriter");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setIconImage(icon.getImage());
-        f.setLocationRelativeTo(null);
 
+        // 设置窗口大小
+        f.setSize(settings.windowWidth, settings.windowHeight);
         if (settings.isMaximized) {
             f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        } else {
-            f.setSize(settings.windowWidth, settings.windowHeight);
         }
+        f.setLocationRelativeTo(null);
 
         return f.getContentPane();
+    }
+
+    private static JMenuBar initMenu() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu("文件");
+        JMenuItem openItem = new JMenuItem("打开");
+        JMenuItem saveItem = new JMenuItem("保存");
+        JMenuItem saveAsItem = new JMenuItem("另存为");
+        JMenuItem exitItem = new JMenuItem("退出");
+
+        openItem.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            fileChooser.addChoosableFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.getName().endsWith(".asm");
+                }
+
+                @Override
+                public String getDescription() {
+                    return "汇编文件 (*.asm)";
+                }
+            });
+
+            int result = fileChooser.showOpenDialog(f);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String path = fileChooser.getSelectedFile().getAbsolutePath();
+
+                try {
+                } catch (Exception e1) {
+                    error.setLastError(e1);
+                }
+            }
+        });
+
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.add(saveAsItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+
+        menuBar.add(fileMenu);
+
+        return menuBar;
     }
 
     public static void main(String[] args) {
@@ -102,6 +154,7 @@ public class Main {
         }
 
         c = initGui();
+        f.setJMenuBar(initMenu());
 
         f.setVisible(true);
     }

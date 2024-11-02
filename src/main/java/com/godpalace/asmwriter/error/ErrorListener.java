@@ -1,4 +1,4 @@
-package com.godpalace.asmwriter.other.error;
+package com.godpalace.asmwriter.error;
 
 public interface ErrorListener {
     public void error(ErrorManager manager);

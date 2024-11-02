@@ -1,7 +1,5 @@
 package com.godpalace.asmwriter.test;
 
-import com.godpalace.asmwriter.gui.Terminal;
-
 import javax.swing.*;
 
 public class TestMain {

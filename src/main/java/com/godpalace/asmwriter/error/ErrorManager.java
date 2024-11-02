@@ -1,4 +1,4 @@
-package com.godpalace.asmwriter.other.error;
+package com.godpalace.asmwriter.error;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -15,15 +15,19 @@ public class ErrorManager {
 
     public ErrorManager() {
         lastError = "";
-        listeners = new Vector<ErrorListener>();
+        listeners = new Vector<>();
     }
 
     public void setLastError(String error) {
         lastError = error;
+
+        for (ErrorListener listener : listeners) {
+            listener.error(this);
+        }
     }
 
     public void setLastError(Exception e) {
-        lastError = Arrays.toString(e.getStackTrace());
+        lastError = e.getMessage();
 
         for (ErrorListener listener : listeners) {
             listener.error(this);
