@@ -1,7 +1,10 @@
 package com.godpalace.asmwriter.gui;
 
 import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -18,9 +21,9 @@ public class Terminal extends JPanel {
         pane = new JTabbedPane();
         pane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         pane.setTabPlacement(JTabbedPane.TOP);
-        pane.setBackground(new Color(50, 50, 50));
 
-        this.add(pane);
+        this.setLayout(new BorderLayout());
+        this.add(pane, BorderLayout.CENTER);
     }
 
     public Terminal() {
@@ -61,9 +64,8 @@ public class Terminal extends JPanel {
         private StyledDocument document;
         private final Font font;
 
-        private final StringBuilder input;
         private final Process process;
-        private final Executor pool;
+        private int startIndex = 0;
 
         private final Reader in;
         private final Writer out;
@@ -72,7 +74,7 @@ public class Terminal extends JPanel {
 
         private void append(String text, Color color) {
             try {
-                Style style = textPane.addStyle("color", null);
+                Style style = textPane.addStyle(System.currentTimeMillis() + "", null);
                 StyleConstants.setForeground(style, color);
 
                 document.insertString(document.getLength(), text, style);
@@ -91,23 +93,13 @@ public class Terminal extends JPanel {
                 @Override
                 public void keyTyped(KeyEvent e) {
                     if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-                        pool.execute(() -> {
-                            try {
-                                out.write(input.toString() + "\n");
-                            } catch (IOException ex) {
-                                append("输入错误: " + ex.getMessage() + "\n", Color.RED);
-                            }
-                        });
 
-                        input.replace(0, input.length(), "");
-                        input.setLength(0);
-                    } else {
-                        input.append(e.getKeyChar());
                     }
                 }
             });
 
-            this.add(textPane);
+            this.setLayout(new BorderLayout());
+            this.add(new JScrollPane(textPane), BorderLayout.CENTER);
         }
 
         public TerminalTab(Process process) throws UnsupportedEncodingException {
@@ -115,10 +107,8 @@ public class Terminal extends JPanel {
 
             font = new Font("微软雅黑", Font.PLAIN, 14);
 
-            pool = Executors.newFixedThreadPool(1);
             initGui();
 
-            this.input = new StringBuilder();
             this.process = process;
 
             this.in = new InputStreamReader(process.getInputStream(), "GBK");
@@ -128,7 +118,12 @@ public class Terminal extends JPanel {
             executor.execute(() -> {
                 try {
                     while (true) {
-                        append(readLine(in) + "\n", Color.BLACK);
+                        Thread.sleep(100);
+
+                        String line = readLine(in);
+                        if (line.isEmpty()) continue;
+
+                        append(line + "\n", Color.BLACK);
                     }
                 } catch (Exception ex) {
                     append("错误: " + ex.getMessage() + "\n", Color.RED);
@@ -138,7 +133,12 @@ public class Terminal extends JPanel {
             executor.execute(() -> {
                 try {
                     while (true) {
-                        append(readLine(err) + "\n", Color.RED);
+                        Thread.sleep(100);
+
+                        String line = readLine(err);
+                        if (line.isEmpty()) continue;
+
+                        append(line + "\n", Color.RED);
                     }
                 } catch (Exception ex) {
                     append("错误: " + ex.getMessage() + "\n", Color.RED);
