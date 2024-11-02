@@ -1,0 +1,226 @@
+{
+  "language_type": "nasm",
+  "architecture": "x86_64",
+  "grammar": [
+    {
+      "name": "mov",
+      "type": "instruction",
+      "usage": [
+        "mov ${register}, ${register}",
+        "mov ${register}, ${data}",
+        "mov ${register}, ${address}",
+        "mov ${address}, ${register}",
+        "mov ${address}, ${data}"
+      ]
+    },
+    {
+      "name": "add",
+      "type": "instruction",
+      "usage": [
+        "add ${register}, ${register}",
+        "add ${register}, ${data}",
+        "add ${register}, ${address}",
+        "add ${address}, ${register}",
+        "add ${address}, ${data}"
+      ]
+    },
+    {
+      "name": "sub",
+      "type": "instruction",
+      "usage": [
+        "sub ${register}, ${register}",
+        "sub ${register}, ${data}",
+        "sub ${register}, ${address}",
+        "sub ${address}, ${register}",
+        "sub ${address}, ${data}"
+      ]
+    },
+    {
+      "name": "mul",
+      "type": "instruction",
+      "usage": [
+        "mul ${register}, ${register}",
+        "mul ${register}, ${data}",
+        "mul ${register}, ${address}",
+        "mul ${address}, ${register}",
+        "mul ${address}, ${data}"
+      ]
+    },
+    {
+      "name": "div",
+      "type": "instruction",
+      "usage": [
+        "div ${register}, ${register}",
+        "div ${register}, ${data}",
+        "div ${register}, ${address}",
+        "div ${address}, ${register}",
+        "div ${address}, ${data}"
+      ]
+    },
+    {
+      "name": "cmp",
+      "type": "instruction",
+      "usage": [
+        "cmp ${register}, ${register}",
+        "cmp ${register}, ${data}",
+        "cmp ${register}, ${address}",
+        "cmp ${address}, ${register}",
+        "cmp ${address}, ${data}"
+      ]
+    },
+    {
+      "name": "jmp",
+      "type": "instruction",
+      "usage": [
+        "jmp ${label}",
+        "jmp ${address}"
+      ]
+    },
+    {
+      "name": "je",
+      "type": "instruction",
+      "usage": [
+        "je ${label}",
+        "je ${address}"
+      ]
+    },
+    {
+      "name": "jne",
+      "type": "instruction",
+      "usage": [
+        "jne ${label}",
+        "jne ${address}"
+      ]
+    },
+    {
+      "name": "jg",
+      "type": "instruction",
+      "usage": [
+        "jg ${label}",
+        "jg ${address}"
+      ]
+    },
+    {
+      "name": "jge",
+      "type": "instruction",
+      "usage": [
+        "jge ${label}",
+        "jge ${address}"
+      ]
+    },
+    {
+      "name": "jl",
+      "type": "instruction",
+      "usage": [
+        "jl ${label}",
+        "jl ${address}"
+      ]
+    },
+    {
+      "name": "jle",
+      "type": "instruction",
+      "usage": [
+        "jle ${label}",
+        "jle ${address}"
+      ]
+    },
+    {
+      "name": "call",
+      "type": "instruction",
+      "usage": [
+        "call ${label}",
+        "call ${address}"
+      ]
+    },
+    {
+      "name": "ret",
+      "type": "instruction",
+      "usage": [
+        "ret"
+      ]
+    },
+    {
+      "name": "push",
+      "type": "instruction",
+      "usage": [
+        "push ${register}",
+        "push ${data}",
+        "push ${address}"
+      ]
+    },
+    {
+      "name": "pop",
+      "type": "instruction",
+      "usage": [
+        "pop ${register}",
+        "pop ${address}"
+      ]
+    },
+    {
+      "name": "register",
+      "type": "token",
+      "usage": [
+        "al",
+        "ax",
+        "eax",
+        "rax",
+        "bl",
+        "bx",
+        "ebx",
+        "rbx",
+        "cl",
+        "cx",
+        "ecx",
+        "rcx",
+        "dl",
+        "dx",
+        "edx",
+        "rdx",
+        "sil",
+        "si",
+        "esi",
+        "rsi",
+        "dil",
+        "di",
+        "edi",
+        "rdi",
+        "spl",
+        "sp",
+        "esp",
+        "rsp",
+        "r8l",
+        "r8w",
+        "r8d",
+        "r8",
+        "r9l",
+        "r9w",
+        "r9d",
+        "r9",
+        "r10l",
+        "r10w",
+        "r10d",
+        "r10",
+        "r11l",
+        "r11w",
+        "r11d",
+        "r11",
+        "r12l",
+        "r12w",
+        "r12d",
+        "r12",
+        "r13l",
+        "r13w",
+        "r13d",
+        "r13",
+        "r14l",
+        "r14w",
+        "r14d",
+        "r14",
+        "r15l",
+        "r15w",
+        "r15d",
+        "r15"
+      ]
+    }
+  ]
+}
