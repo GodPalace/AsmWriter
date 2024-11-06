@@ -1,20 +1,13 @@
 package com.godpalace.asmwriter.test;
 
-import javax.swing.*;
+import javafx.application.Application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestMain {
-    public static void main(String[] args) throws Exception {
-        JFrame frame = new JFrame("Test");
-        frame.setSize(600, 500);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public static final Logger LOGGER = LoggerFactory.getLogger(TestMain.class);
 
-        Terminal terminal = new Terminal();
-        frame.setContentPane(terminal);
-
-        Process process = Runtime.getRuntime().exec("ping 127.0.0.1");
-        terminal.addProcess("DoPing", process);
-
-        frame.setVisible(true);
+    public static void main(String[] args) {
+        Application.launch(TestAppSetup.class, args);
     }
 }
