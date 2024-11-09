@@ -3,31 +3,53 @@ package com.godpalace.asmwriter;
 import javafx.application.Application;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static com.godpalace.asmwriter.AppSetup.*;
-import static com.godpalace.asmwriter.config.ResourcePaths.CONFIG_PATH;
+import static com.godpalace.asmwriter.config.ResourceConfig.CONFIG_PATH;
 
 public class Main {
     // Class variables
     protected static final Toolkit toolkit = Toolkit.getDefaultToolkit();
+    protected static final Clipboard clipboard = toolkit.getSystemClipboard();
+    protected static final ThreadPoolExecutor executor =
+            new ThreadPoolExecutor(10, 35, 10,
+                    TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000));
+
+    // 保存设置
+    protected static void saveProperties() {
+        try {
+            properties.setProperty("windowHeight", (int) stage.getHeight() + "");
+            properties.setProperty("windowWidth", (int) stage.getWidth() + "");
+            properties.setProperty("isMaximized",
+                    (stage.isMaximized() ? "true" : "false"));
+
+            properties.store(new FileOutputStream(CONFIG_PATH), null);
+        } catch (Exception e) {
+            LOGGER.error("Error while saving properties", e);
+        }
+    }
+
+    // 清理工作
+    protected static void cleanUp() {
+        try {
+        } catch (Exception e) {
+            LOGGER.error("Error while cleaning up", e);
+        }
+    }
 
     static {
         // 设置关闭钩子
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    properties.setProperty("windowHeight", (int) stage.getHeight() + "");
-                    properties.setProperty("windowWidth", (int) stage.getWidth() + "");
-                    properties.setProperty("isMaximized",
-                            (stage.isMaximized() ? "true" : "false"));
-
-                    properties.store(new FileOutputStream(CONFIG_PATH), null);
-                } catch (Exception e) {
-                    LOGGER.error("Error while saving properties", e);
-                }
+                saveProperties();
+                cleanUp();
             }));
         } catch (Exception e) {
             LOGGER.error("Error while adding shutdown hook", e);
