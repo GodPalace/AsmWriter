@@ -37,12 +37,12 @@
         <logger name="org.mybatis" level="INFO"/>
 
         <!-- 建立一个默认的root的logger -->
-        <root level="trace">
+        <pane level="trace">
             <appender-ref ref="RollingFile"/>
             <appender-ref ref="Console"/>
             <appender-ref ref="ERROR"/>
             <appender-ref ref="log"/>
-        </root>
+        </pane>
     </loggers>
 
 </configuration>

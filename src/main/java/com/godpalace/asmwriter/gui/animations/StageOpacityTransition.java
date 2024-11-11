@@ -1,4 +1,4 @@
-package com.godpalace.asmwriter.animations;
+package com.godpalace.asmwriter.gui.animations;
 
 import javafx.animation.Transition;
 import javafx.stage.Stage;

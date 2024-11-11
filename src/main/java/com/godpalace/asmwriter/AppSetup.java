@@ -1,10 +1,9 @@
 package com.godpalace.asmwriter;
 
-import com.godpalace.asmwriter.animations.StageOpacityTransition;
+import com.godpalace.asmwriter.gui.animations.StageOpacityTransition;
 import com.godpalace.asmwriter.annotations.JavaFXApplication;
 import com.godpalace.asmwriter.settings.GuiSettings;
 import com.leewyatt.rxcontrols.controls.RXFillButton;
-import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
@@ -73,42 +72,13 @@ public class AppSetup extends Application {
         LOGGER.info("Starting AsmWriter...");
 
         // 全局变量
-        AnchorPane pane = new AnchorPane();
+        AnchorPane pane = createTitleBarPane(new AnchorPane());
         Scene scene = new Scene(pane);
         stage = STAGE;
 
         // 窗口标题栏初始化
         pane.setBackground(new Background(new BackgroundFill(
                 Color.rgb(60, 63, 65), null, null)));
-
-        RXFillButton minimizeButton = createTitleBarButton("-", "最小化");
-        RXFillButton maximizeButton = createTitleBarButton("□", "最大化");
-        RXFillButton closeButton = createCloseButton();
-
-        AnchorPane.setRightAnchor(minimizeButton, titleButtonSize * 2);
-        AnchorPane.setRightAnchor(maximizeButton, titleButtonSize);
-        AnchorPane.setRightAnchor(closeButton, 0.0);
-
-        minimizeButton.setOnMouseClicked(e -> stage.setIconified(true));
-        closeButton.setOnMouseClicked(e -> {
-            // 窗口关闭时的渐淡动画
-            StageOpacityTransition transition = new StageOpacityTransition(
-                    stage, stage.getOpacity(), 0.0, Duration.millis(125));
-
-            // 渐淡动画结束后关闭窗口
-            transition.setOnFinished(event -> {
-                onClosedClearUp();
-                stage.close();
-            });
-
-            // 开始播放动画
-            transition.play();
-        });
-        maximizeButton.setOnMouseClicked(e -> {
-            stage.setMaximized(!stage.isMaximized());
-            if (stage.isMaximized()) maximizeButton.setText("=");
-            else maximizeButton.setText("□");
-        });
 
         // 窗口拖动事件
         stage.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
@@ -241,8 +211,6 @@ public class AppSetup extends Application {
         });
         stage.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> curResizeType = ResizeType.NONE);
 
-        pane.getChildren().addAll(minimizeButton, maximizeButton, closeButton);
-
         // 初始化GUI设置
         stage.setTitle("AsmWriter");
         stage.getIcons().add(icon);
@@ -324,6 +292,41 @@ public class AppSetup extends Application {
         button.setTooltip(tooltip);
 
         return button;
+    }
+
+    protected AnchorPane createTitleBarPane(AnchorPane pane) {
+        // 窗口标题栏初始化
+        RXFillButton minimizeButton = createTitleBarButton("-", "最小化");
+        RXFillButton maximizeButton = createTitleBarButton("□", "最大化");
+        RXFillButton closeButton = createCloseButton();
+
+        AnchorPane.setRightAnchor(minimizeButton, titleButtonSize * 2);
+        AnchorPane.setRightAnchor(maximizeButton, titleButtonSize);
+        AnchorPane.setRightAnchor(closeButton, 0.0);
+
+        minimizeButton.setOnMouseClicked(e -> stage.setIconified(true));
+        closeButton.setOnMouseClicked(e -> {
+            // 窗口关闭时的渐淡动画
+            StageOpacityTransition transition = new StageOpacityTransition(
+                    stage, stage.getOpacity(), 0.0, Duration.millis(125));
+
+            // 渐淡动画结束后关闭窗口
+            transition.setOnFinished(event -> {
+                onClosedClearUp();
+                stage.close();
+            });
+
+            // 开始播放动画
+            transition.play();
+        });
+        maximizeButton.setOnMouseClicked(e -> {
+            stage.setMaximized(!stage.isMaximized());
+            if (stage.isMaximized()) maximizeButton.setText("=");
+            else maximizeButton.setText("□");
+        });
+
+        pane.getChildren().addAll(minimizeButton, maximizeButton, closeButton);
+        return pane;
     }
 
     private enum ResizeType {
