@@ -89,4 +89,10 @@ public class Main {
         // 启动GUI
         Application.launch(AppSetup.class, args);
     }
+
+    //////////////////////////////////////////////////////////////////////
+
+    protected static double getTaskbarHeight() throws Exception {
+        return 0;
+    }
 }

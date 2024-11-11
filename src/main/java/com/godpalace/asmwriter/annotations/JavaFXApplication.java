@@ -1,4 +1,4 @@
-package com.godpalace.asmwriter.Annotations;
+package com.godpalace.asmwriter.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

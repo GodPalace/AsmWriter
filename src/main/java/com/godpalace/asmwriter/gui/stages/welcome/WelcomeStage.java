@@ -1,4 +1,4 @@
-package com.godpalace.asmwriter.gui.stages;
+package com.godpalace.asmwriter.gui.stages.welcome;
 
 import javafx.stage.Stage;
 
